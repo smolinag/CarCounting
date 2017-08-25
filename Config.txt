@@ -1,0 +1,16 @@
+Configuration for Car Counting Project.
+
+Necessary:
+-VS 2013
+-OpenCV 2.4.13
+
+Steps:
+1) Download and install VS 2013 and the extensions to create C++ projects.
+2) Execute OpenCV and extract it in C:\opencv2413
+3) Open environment variables and add to the path environmet variable the following: C:\opencv2413\build\x86\vc14\bin and restart the computer
+4) Create a new C++ project and open its properties. In C/C++\General\Additional Include Directories add the following: C:\opencv2413\build\include
+5) In Linker\General\Additional LIbrary Directories add: C:\opencv2413\build\x86\vc14\lib
+6) In Linker\Input\Additional Dependencies add the libraries to use i.e: }
+	opencv_core2413.lib
+	opencv_imgproc2413.lib
+	opencv_highgui2413.lib
