@@ -15,7 +15,7 @@ using namespace std;
 //Save frames info
 bool saveFramesFlag = true;
 string savePath = "D:\\Documentos\\Proyectos\\Analisis de trafico vehicular\\VideosDB\\";
-string vidName = "IpCam3";
+string vidName;
 int frIdx = 1;
 int zeroNum = 6;
 string ext = ".jpg";
@@ -39,11 +39,9 @@ int main(){
 	}
 
 	if (!Video.isOpened())
-		printf("camera is null\n");
+		cout << "Camera is null" << endl;
 	else
 	{
-		printf("camera is not null");
-		cvNamedWindow("img");
 
 		while (waitKey(10) != atoi("q"))
 		{
@@ -67,15 +65,16 @@ int main(){
 //Creates directory or overwrites files according to user input
 void createFolder(){
 	
+	cout << "Enter a name for the video to record: ";
+	cin >> vidName;
 	String path = savePath + vidName;
 	char pathCh[1024];
 	strncpy(pathCh, path.c_str(), sizeof(pathCh));
 	pathCh[sizeof(pathCh) - 1] = 0;
 
-	cout << pathCh << endl;
 
 	if (dirExists(pathCh)){
-		cout << "Directory already exists. Overwrite files? (y/n)" << endl;
+		cout << endl << "Directory: \"" << pathCh << "\"already exists." << endl << "Overwrite files ? (y / n)";
 		string overwriteFlag;
 		cin >> overwriteFlag;
 
@@ -83,7 +82,7 @@ void createFolder(){
 			saveFramesFlag = false;
 	}
 	else{
-		cout << "Directory does not exist. Would you like to create it? (y/n)" << endl;
+		cout << endl << "Directory: \"" << pathCh << "\" does not exist." << endl << "Would you like to create it? (y / n)" << endl;
 		string createFlag;
 		cin >> createFlag;
 
