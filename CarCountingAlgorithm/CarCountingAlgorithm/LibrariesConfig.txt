@@ -1,0 +1,5 @@
+Configuration of CarCountingAlgorithm:
+
+1) To read the databases using the DatasetsMenu class it is necessary dirent.h. If it is not included in the VS, paste it in the following path:
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include
+
