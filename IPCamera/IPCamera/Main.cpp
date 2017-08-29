@@ -31,6 +31,12 @@ int main(){
 
 	VideoCapture Video;
 	Mat Im;
+
+	//Set IpCam to preset position 1, see CGI commands for more info
+	Video.open("http://192.168.1.150:81/decoder_control.cgicommand=31user=admin&pwd=molina92");
+	Video.release();
+	system("cls");
+
 	Video.open("http://192.168.1.150:81/videostream.cgiuser=admin&pwd=molina92&resolution=32&rate=10.mjpg");	
 
 	//Create folder to store frames
