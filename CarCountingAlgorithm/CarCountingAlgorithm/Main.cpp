@@ -27,17 +27,26 @@ void main(){
 	//Foreground Postprocessing object
 	ForegroundPostProcessing FP(Fr);
 
+	//Time vars
+	double t1, t2;
+
 	for (;;){
 		DM.Get_Frame(Fr_o);		
 
 		if (Fr_o.empty())
 			break;
-
+		t1 = (double)cvGetTickCount();
 		resize(Fr_o, Fr, Size(480, 320));
 		bgs->process(Fr, fgMask, BM);
-		imshow("Gaussian Mixture Model (Zivkovic)", fgMask);		
+		t2 = (double)cvGetTickCount();
+		printf("\nBGS time: %gms", (t2 - t1) / (cvGetTickFrequency()*1000.));
 
+		//imshow("Gaussian Mixture Model (Zivkovic)", fgMask);		
+
+		t1 = (double)cvGetTickCount();
 		FP.postProcessingMain(fgMask);
+		t2 = (double)cvGetTickCount();
+		printf("\nPostprocess time: %gms", (t2 - t1) / (cvGetTickFrequency()*1000.));
 
 		imshow("Frame", Fr);
 		waitKey(1);

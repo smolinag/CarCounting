@@ -18,11 +18,11 @@ public:
 
 	void postProcessingMain(const cv::Mat &fMask);
 
-	void fillHoles();
+	void fillHoles(const cv::Mat &fMask);
 
-	void deleteSmallRegions();
+	void deleteSmallRegions(const cv::Mat &fMask);
 
-	int bwLabel(cv::Mat fMask, cv::Mat &bwFMask);
+	int roiLabelling(cv::Mat fMask, cv::Mat &bwFMask);
 
 	void imagesc(cv::Mat src, int siz, char* Plotname);
 
