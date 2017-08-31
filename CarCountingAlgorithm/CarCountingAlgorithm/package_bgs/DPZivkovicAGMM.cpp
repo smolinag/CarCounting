@@ -69,11 +69,6 @@ void DPZivkovicAGMM::process(const cv::Mat &img_input, cv::Mat &img_output, cv::
   img_background = cv::cvarrToMat(bgs.Background()->Ptr());
   //img_background = cv::Mat::zeros(img_input.size(), img_input.type());
 
-#ifndef MEX_COMPILE_FLAG
-  if (showOutput)
-    cv::imshow("Gaussian Mixture Model (Zivkovic)", img_foreground);
-#endif
-
   img_foreground.copyTo(img_output);
   img_background.copyTo(img_bgmodel);
 

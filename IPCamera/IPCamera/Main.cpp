@@ -49,11 +49,11 @@ int main(){
 	else
 	{
 
-		while (waitKey(10) != atoi("q"))
+		while (1)
 		{
 			double t1 = (double)cvGetTickCount();
 			Video >> Im;
-			imshow("Frame", Im);
+			//imshow("Frame", Im);
 			
 			//Save current frame
 			if (saveFramesFlag){
