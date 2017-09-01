@@ -1,4 +1,5 @@
 #include "ForegroundPostProcessing.h"
+#include "ColorLibrary.h"
 
 
 ForegroundPostProcessing::ForegroundPostProcessing(const cv::Mat iniFrame){
@@ -17,8 +18,7 @@ ForegroundPostProcessing::ForegroundPostProcessing(const cv::Mat iniFrame){
 void ForegroundPostProcessing::postProcessingMain(const cv::Mat &fMask){
 
 	//Perform foreground mask closing
-	morphologyEx(fMask, fMask, 3, ForegroundPostProcessing::morphElement1);
-	cv::imshow("fMask", fMask);
+	morphologyEx(fMask, fMask, 3, ForegroundPostProcessing::morphElement1);	
 
 	//Delete small regions
 	deleteSmallRegions(fMask);
@@ -29,13 +29,15 @@ void ForegroundPostProcessing::postProcessingMain(const cv::Mat &fMask){
 
 	//Fill holes
 	fillHoles(fMask);
+	fMaskPost = fMask;
+	cv::imshow("fMask", fMask);
 
 	//Label isolated regions and store their contours
 	cv::Mat fRoi;
-	int nFRois = roiLabelling(fMask, fRoi);
+	nRois = roiLabelling(fMask, fRoi);
 
 	//Displays labeled regions
-	imagesc(fRoi, nFRois, "Foreground ROIs");
+	imagesc(fRoi, nRois, "Foreground ROIs");
 }
 
 //Deletes regions smaller than a percentage of the frame size according to the size of their countours
@@ -46,7 +48,7 @@ void ForegroundPostProcessing::deleteSmallRegions(const cv::Mat &fMask){
 	cv::findContours(A, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 
 	//Loop through countours finding regions with short contours (therefore small area)
-	for (int i = 0; i < contours.size(); i++)
+	for (size_t i = 0; i < contours.size(); i++)
 	{
 		if (contours[i].size() < minArea)
 		{
@@ -62,7 +64,7 @@ void ForegroundPostProcessing::deleteSmallRegions(const cv::Mat &fMask){
 void ForegroundPostProcessing::fillHoles(const cv::Mat &fMask){
 
 	//Loop through countours finding inner contours to fill them
-	for (int i = 0; i < contours.size(); i++)
+	for (size_t i = 0; i < contours.size(); i++)
 	{
 		if (hierarchy[i][3] != -1)
 		{
@@ -81,12 +83,9 @@ int ForegroundPostProcessing::roiLabelling(cv::Mat fMask, cv::Mat &bwFMask){
 	int Nroi = 0;
 
 	//Variables to store contours coordinates of each isolated region 
-	xCoordRoiCountour.clear();
-	yCoordRoiCountour.clear();
-	std::vector<int> X_temp;
-	std::vector<int> Y_temp;
+	roisCountours.clear();
 
-	for (int i = 0; i < contours.size(); i++)
+	for (size_t i = 0; i < contours.size(); i++)
 	{
 		if (hierarchy[i][3] == -1){
 
@@ -94,17 +93,7 @@ int ForegroundPostProcessing::roiLabelling(cv::Mat fMask, cv::Mat &bwFMask){
 			pt.x = contours[i][0].x;
 			pt.y = contours[i][0].y;
 			floodFill(bwFMask, pt, cv::Scalar::all(Nroi), 0, cv::Scalar(), cv::Scalar(), 8);
-
-			X_temp.clear();
-			Y_temp.clear();
-
-			//store contours coordinates
-			for (int j = 0; j < contours[i].size(); j++){
-				X_temp.push_back(contours[i][j].x);
-				Y_temp.push_back(contours[i][j].y);
-			}
-			xCoordRoiCountour.push_back(X_temp);
-			yCoordRoiCountour.push_back(Y_temp);
+			roisCountours.push_back(contours[i]);
 		}
 	}
 	return Nroi;

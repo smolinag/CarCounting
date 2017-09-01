@@ -4,6 +4,7 @@
 #include <opencv2/core/core.hpp>
 #include "package_bgs\DPZivkovicAGMM.h"
 #include "ForegroundPostProcessing.h"
+#include "Tracking.h"
 
 using namespace cv;
 
@@ -30,6 +31,10 @@ void main(){
 	//Time vars
 	double t1, t2;
 
+	//Tracking 
+	Tracking Tracking;
+
+
 	for (;;){
 		DM.Get_Frame(Fr_o);		
 
@@ -41,15 +46,17 @@ void main(){
 		t2 = (double)cvGetTickCount();
 		printf("\nBGS time: %gms", (t2 - t1) / (cvGetTickFrequency()*1000.));
 
-		//imshow("Gaussian Mixture Model (Zivkovic)", fgMask);		
+		imshow("Gaussian Mixture Model (Zivkovic)", fgMask);		
 
 		t1 = (double)cvGetTickCount();
 		FP.postProcessingMain(fgMask);
 		t2 = (double)cvGetTickCount();
 		printf("\nPostprocess time: %gms", (t2 - t1) / (cvGetTickFrequency()*1000.));
 
-		imshow("Frame", Fr);
-		waitKey(1);
+		Tracking.getCurrentFrameObjects(FP.nRois, FP.fMaskPost, FP.roisCountours, Fr);
+
+		//imshow("Frame", Fr);
+		//waitKey();
 	}
 	delete bgs;
 }
