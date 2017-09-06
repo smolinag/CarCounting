@@ -5,6 +5,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/core/core.hpp>
 #include <vector>
+#include <numeric>
 #include "TrackedObject.h"
 
 class Tracking{
@@ -18,12 +19,17 @@ public:
 
 private:
 
-	void showTrackingBBoxes(std::vector<TrackedObject>);
+	void showTrackingBBoxes(std::vector<TrackedObject> objects);
+
+	void getNearestRois();
+
+	std::vector<std::size_t> sortVectorGetIndexes(std::vector<double> vecA);
 
 	cv::Mat frame;
 	cv::Mat fRois;
 	std::vector<std::vector<cv::Point>> roisContours;
 	int trckingId;	
 	std::vector<TrackedObject> detectedObjects;
+	std::vector<std::vector<std::size_t>> nearestRoisRank;
 };
 #endif
