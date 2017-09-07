@@ -17,6 +17,8 @@ int CarCounting::loadXMLConfiguration(std::string XMLFilePath){
 	// Read the xml file into a vector
 	std::ifstream theFile(XMLFilePath);
 	vector<char> buffer((std::istreambuf_iterator<char>(theFile)), std::istreambuf_iterator<char>());
+	if (buffer.empty())
+		return -1;
 	buffer.push_back('\0');
 
 	// Parse the buffer using the xml file parsing library into doc 
@@ -77,6 +79,26 @@ int CarCounting::loadXMLConfiguration(std::string XMLFilePath){
 	}
 	//Store lanes
 	lanes.push_back(lane);
+
+	generateLanesMask();
+
+	return 0;
+}
+
+int CarCounting::generateLanesMask(){
+
+	Mat test = Mat(frameHeight, frameWidth, CV_8UC3, cv::Scalar(0,0,0));
+
+	for (size_t i = 0; i < lanes.size(); i++){
+
+		vector<Point> tmp = lanes[0].polygonPoints;
+		const Point* elementPoints[1] = { &tmp[0] };
+		int numPoints[] = { tmp.size() };
+		cv::fillPoly(test, elementPoints, numPoints, 1, cv::Scalar(Color[i][0], Color[i][1], Color[i][2]), 8);
+	}
+	
+	imshow("test", test);
+	cv::waitKey();
 
 	return 0;
 }
