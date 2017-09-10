@@ -1,6 +1,9 @@
 #include "ForegroundPostProcessing.h"
 #include "ColorLibrary.h"
 
+ForegroundPostProcessing::ForegroundPostProcessing(){
+
+}
 
 ForegroundPostProcessing::ForegroundPostProcessing(const cv::Mat iniFrame){
 

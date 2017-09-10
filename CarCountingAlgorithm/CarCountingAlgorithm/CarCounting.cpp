@@ -2,12 +2,62 @@
 
 CarCounting::CarCounting(){
 
+	//Load XML Configuration
 	loadXMLConfiguration("./config/HomeCam5.xml");
+
+	//Initialize datast object and select record source
+	datasetsMenuObj = Datasets_Menu();
+	datasetsMenuObj.Select_Dataset();
+
+	//Load initial frame	
+	datasetsMenuObj.Get_Frame(oFrame);
+	resize(oFrame, frame, cv::Size(480, 320));
+
+	//Initialize background subtraction  object	
+	bgs = new DPZivkovicAGMM;
+
+	//Initialize foreground Postprocessing object
+	fgroundPPObj = ForegroundPostProcessing(frame);
+
+	//Initialize tracking object
+	trackingObj = Tracking();
 }
 
 CarCounting::~CarCounting(){
 
-	
+	delete bgs;
+}
+
+int CarCounting::executeAlgorithm(){
+
+	//Get new frame
+	datasetsMenuObj.Get_Frame(oFrame);
+
+	//If frame is empty return -1
+	if (oFrame.empty())
+		return -1;
+
+	//Perform background subtraction
+	t1 = (double)cvGetTickCount();
+	resize(oFrame, frame, cv::Size(480, 320));
+	bgs->process(frame, fground, bgroundModel);
+	t2 = (double)cvGetTickCount();
+	printf("\nBGS time: %gms", (t2 - t1) / (cvGetTickFrequency()*1000.));
+	//imshow("Gaussian Mixture Model (Zivkovic)", fground);
+
+	//Perform foreground postprocess
+	t1 = (double)cvGetTickCount();
+	fgroundPPObj.postProcessingMain(fground);
+	t2 = (double)cvGetTickCount();
+	printf("\nPostprocess time: %gms", (t2 - t1) / (cvGetTickFrequency()*1000.));
+
+	//Get objects from foreground regions
+	trackingObj.getCurrentFrameObjects(fgroundPPObj.nRois, fgroundPPObj.fMaskPost, fgroundPPObj.roisCountours, frame);
+
+	//imshow("Frame", Fr);
+	//waitKey();
+
+	return 0;
 }
 
 int CarCounting::loadXMLConfiguration(std::string XMLFilePath){

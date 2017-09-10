@@ -9,6 +9,8 @@
 class ForegroundPostProcessing{
 
 public:
+	ForegroundPostProcessing();
+
 	ForegroundPostProcessing(const cv::Mat iniFrame);
 
 	void postProcessingMain(const cv::Mat &fMask);
