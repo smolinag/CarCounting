@@ -20,7 +20,7 @@ CarCounting::CarCounting(){
 	fgroundPPObj = ForegroundPostProcessing(frame);
 
 	//Initialize tracking object
-	trackingObj = Tracking();
+	trackingObj = Tracking(lanesConfig);
 }
 
 CarCounting::~CarCounting(){
@@ -36,6 +36,8 @@ int CarCounting::executeAlgorithm(){
 	//If frame is empty return -1
 	if (oFrame.empty())
 		return -1;
+
+	generateLanesMask();
 
 	//Perform background subtraction
 	t1 = (double)cvGetTickCount();
@@ -128,26 +130,30 @@ int CarCounting::loadXMLConfiguration(std::string XMLFilePath){
 		lane.polygonPoints = polyPoints;
 	}
 	//Store lanes
-	lanes.push_back(lane);
+	lanesConfig.push_back(lane);
 
-	generateLanesMask();
+	
 
 	return 0;
 }
 
 int CarCounting::generateLanesMask(){
 
-	Mat test = Mat(frameHeight, frameWidth, CV_8UC3, cv::Scalar(0,0,0));
+	Mat frameRois = oFrame.clone();
+	Mat frameCpy = oFrame.clone();
 
-	for (size_t i = 0; i < lanes.size(); i++){
+	for (size_t i = 0; i < lanesConfig.size(); i++){
 
-		vector<Point> tmp = lanes[0].polygonPoints;
+		vector<Point> tmp = lanesConfig[0].polygonPoints;
 		const Point* elementPoints[1] = { &tmp[0] };
 		int numPoints[] = { tmp.size() };
-		cv::fillPoly(test, elementPoints, numPoints, 1, cv::Scalar(Color[i][0], Color[i][1], Color[i][2]), 8);
+		cv::fillPoly(frameCpy, elementPoints, numPoints, 1, cv::Scalar(Color[i][0], Color[i][1], Color[i][2], 0.9), 8);
 	}
-	
-	imshow("test", test);
+
+	double alpha = 0.3;
+	cv::addWeighted(frameCpy, alpha, frameRois, 1.0 - alpha, 0.0, frameRois);
+
+	imshow("test", frameRois);
 	cv::waitKey();
 
 	return 0;

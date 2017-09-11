@@ -2,6 +2,11 @@
 
 Tracking::Tracking(){
 
+}
+
+Tracking::Tracking(vector<Lane> lanesConfigInfo){
+
+	lanesInfo = lanesConfigInfo;
 	trckingId = 0;
 }
 
@@ -11,9 +16,17 @@ void Tracking::getCurrentFrameObjects(int nRois, cv::Mat fRois, std::vector<std:
 	detectedObjects.clear();
 
 	for (size_t i = 0; i < nRois; i++){
-		detectedObjects.push_back(TrackedObject(roisContours[i], trckingId));
+		TrackedObject tObj(roisContours[i], trckingId);
+
+		detectedObjects.push_back(tObj);
 	}
 	showTrackingBBoxes(detectedObjects);
+}
+
+bool Tracking::checkRoiInsideLane(TrackedObject tObj){
+	//TO DO
+
+	return true;
 }
 
 void Tracking::getNearestRois(){

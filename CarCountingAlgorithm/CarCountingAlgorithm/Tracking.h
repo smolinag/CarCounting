@@ -8,28 +8,45 @@
 #include <numeric>
 #include "TrackedObject.h"
 
+using cv::Point;
+using cv::Mat;
+using std::string;
+using std::vector;
+using cv::Scalar;
+
+struct Lane{
+	int id;
+	int direction;
+	vector<Point> polygonPoints;
+};
+
 class Tracking{
 
 public:
 	Tracking();
 
-	void getCurrentFrameObjects(int nRois, cv::Mat fRois, std::vector<std::vector<cv::Point>> roisContours, cv::Mat frame);
+	Tracking(vector<Lane> lanesConfigInfo);
 
-	std::vector<TrackedObject> trackedObjects;
+	void getCurrentFrameObjects(int nRois, Mat fRois, vector<vector<Point>> roisContours, Mat frame);
+
+	vector<TrackedObject> trackedObjects;
 
 private:
 
-	void showTrackingBBoxes(std::vector<TrackedObject> objects);
+	bool checkRoiInsideLane(TrackedObject tObj);
 
 	void getNearestRois();
 
-	std::vector<std::size_t> sortVectorGetIndexes(std::vector<double> vecA);
+	void showTrackingBBoxes(vector<TrackedObject> objects);
 
-	cv::Mat frame;
-	cv::Mat fRois;
-	std::vector<std::vector<cv::Point>> roisContours;
+	vector<std::size_t> sortVectorGetIndexes(vector<double> vecA);
+
+	Mat frame;
+	Mat fRois;
+	vector<vector<Point>> roisContours;
 	int trckingId;	
-	std::vector<TrackedObject> detectedObjects;
-	std::vector<std::vector<std::size_t>> nearestRoisRank;
+	vector<TrackedObject> detectedObjects;
+	vector<vector<std::size_t>> nearestRoisRank;
+	vector<Lane> lanesInfo;
 };
 #endif

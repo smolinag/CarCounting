@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CamConfig>
 	<Cam name = "HomeIPCam" resolution = "640x360" location = "La Camelia">
-		<Lane id = "1" direction = "250">
+		<Lane id = "1" direction = "185">
 			<PolyPoint x = "547" y = "191"/>
 			<PolyPoint x = "30" y = "176"/>
 			<PolyPoint x = "29" y = "315"/>

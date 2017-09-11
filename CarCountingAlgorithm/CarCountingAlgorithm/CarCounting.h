@@ -23,12 +23,6 @@ using std::string;
 using std::vector;
 using cv::Scalar;
 
-struct Lane{
-	int id;
-	int direction;
-	vector<Point> polygonPoints;
-};
-
 class CarCounting{
 
 public:
@@ -57,7 +51,7 @@ private:
 	ForegroundPostProcessing fgroundPPObj; //Foreground post processing object
 	Tracking trackingObj; //Tracking object
 
-	vector<Lane> lanes;		//Lanes configuration information
+	vector<Lane> lanesConfig;		//Lanes configuration information
 
 	Mat oFrame;			//Original frame (higher resolution)
 	Mat frame;			//Processed frame (resized)
