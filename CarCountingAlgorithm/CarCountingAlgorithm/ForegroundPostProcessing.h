@@ -6,26 +6,33 @@
 #include <opencv2/core/core.hpp>
 #include <vector>
 
+using cv::Mat;
+using cv::Point;
+using cv::Scalar;
+using std::vector;
+
 class ForegroundPostProcessing{
 
 public:
 	ForegroundPostProcessing();
 
-	ForegroundPostProcessing(const cv::Mat iniFrame);
+	ForegroundPostProcessing(const Mat iniFrame);
 
-	void postProcessingMain(const cv::Mat &fMask);
+	void postProcessingMain(const Mat &fMask);
 
-	void fillHoles(const cv::Mat &fMask);
+	void fillHoles(const Mat &fMask);
 
-	void deleteSmallRegions(const cv::Mat &fMask);
+	void deleteSmallRegions(const Mat &fMask);
 
-	int roiLabelling(cv::Mat fMask, cv::Mat &bwFMask);
+	int roiLabelling(Mat fMask, Mat &bwFMask);
 
-	void imagesc(cv::Mat src, int siz, char* Plotname);
+	void imagesc(Mat src, int siz, char* Plotname);
 
-	std::vector<std::vector<cv::Point>> roisCountours;	
+	vector<vector<Point>> roisCountours;	
 
-	cv::Mat fMaskPost;
+	Mat fMaskPost;	//Foreground mask after postprocessing
+
+	Mat labeledRoisMask;
 
 	int nRois;
 
@@ -33,11 +40,11 @@ private:
 
 	int morphSize1;
 	int morphSize2;
-	cv::Mat morphElement1;
-	cv::Mat morphElement2;
+	Mat morphElement1;
+	Mat morphElement2;
 	int minArea;
-	std::vector<std::vector<cv::Point>> contours;
-	std::vector<cv::Vec4i> hierarchy;
-	cv::Point pt;
+	vector<vector<Point>> contours;
+	vector<cv::Vec4i> hierarchy;
+	Point pt;
 };
 #endif

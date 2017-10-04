@@ -36,11 +36,10 @@ void ForegroundPostProcessing::postProcessingMain(const cv::Mat &fMask){
 	cv::imshow("fMask", fMask);
 
 	//Label isolated regions and store their contours
-	cv::Mat fRoi;
-	nRois = roiLabelling(fMask, fRoi);
+	nRois = roiLabelling(fMask, labeledRoisMask);
 
 	//Displays labeled regions
-	imagesc(fRoi, nRois, "Foreground ROIs");
+	imagesc(labeledRoisMask, nRois, "Foreground ROIs");
 }
 
 //Deletes regions smaller than a percentage of the frame size according to the size of their countours
@@ -80,9 +79,9 @@ void ForegroundPostProcessing::fillHoles(const cv::Mat &fMask){
 
 //Given a foregrounf image (binary), labels each isolated region. 
 //It also stores the coordinates of their countours
-int ForegroundPostProcessing::roiLabelling(cv::Mat fMask, cv::Mat &bwFMask){
+int ForegroundPostProcessing::roiLabelling(cv::Mat fMask, cv::Mat &roiLabelMask){
 	
-	bwFMask = fMask.clone();
+	roiLabelMask = fMask.clone();
 	int Nroi = 0;
 
 	//Variables to store contours coordinates of each isolated region 
@@ -95,7 +94,7 @@ int ForegroundPostProcessing::roiLabelling(cv::Mat fMask, cv::Mat &bwFMask){
 			Nroi++;
 			pt.x = contours[i][0].x;
 			pt.y = contours[i][0].y;
-			floodFill(bwFMask, pt, cv::Scalar::all(Nroi), 0, cv::Scalar(), cv::Scalar(), 8);
+			floodFill(roiLabelMask, pt, cv::Scalar::all(Nroi), 0, cv::Scalar(), cv::Scalar(), 8);
 			roisCountours.push_back(contours[i]);
 		}
 	}

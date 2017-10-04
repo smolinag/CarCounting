@@ -10,23 +10,45 @@ Tracking::Tracking(vector<Lane> lanesConfigInfo){
 	trckingId = 0;
 }
 
-void Tracking::getCurrentFrameObjects(int nRois, cv::Mat fRois, std::vector<std::vector<cv::Point>> roisContours, cv::Mat currFrame){
+void Tracking::getCurrentFrameObjects(int numRois, Mat fRois, vector<vector<Point>> roisContours, Mat currFrame){
 
 	frame = currFrame;
 	detectedObjects.clear();
+	nRois = numRois;
+	labeledRoisMask = fRois;
 
 	for (size_t i = 0; i < nRois; i++){
 		TrackedObject tObj(roisContours[i], trckingId);
 
-		detectedObjects.push_back(tObj);
+		if (checkRoiInsideLane(tObj, i)){
+			detectedObjects.push_back(tObj);
+		}
 	}
 	showTrackingBBoxes(detectedObjects);
 }
 
-bool Tracking::checkRoiInsideLane(TrackedObject tObj){
-	//TO DO
+bool Tracking::checkRoiInsideLane(TrackedObject tObj, size_t roiIdx){
+	
+	bool roiInLane = false;
+	Scalar v;
+	Scalar interceptionSum;
+	Mat singleRoiMask;
+	Mat maskLaneInterception;
+	
+	v.val[0] = roiIdx;
+	compare(labeledRoisMask, v, singleRoiMask, cv::CMP_EQ);
+    singleRoiMask = singleRoiMask / 255;
 
-	return true;
+	for (size_t j = 0; j < lanesInfo.size(); j++){
+
+		cv::multiply(singleRoiMask, lanesInfo[j].mask, maskLaneInterception);
+		interceptionSum = cv::sum(maskLaneInterception);
+
+		if (interceptionSum.val[0] > 0)
+			roiInLane = true;
+	}
+	
+	return roiInLane;
 }
 
 void Tracking::getNearestRois(){
@@ -49,7 +71,7 @@ void Tracking::getNearestRois(){
 	}
 }
 
-void Tracking::showTrackingBBoxes(std::vector<TrackedObject> objects){
+void Tracking::showTrackingBBoxes(vector<TrackedObject> objects){
 
 	int nRois = objects.size();
 	
@@ -64,15 +86,15 @@ void Tracking::showTrackingBBoxes(std::vector<TrackedObject> objects){
 	cv::waitKey();
 }
 
-std::vector<std::size_t> Tracking::sortVectorGetIndexes(std::vector<double> vecA){
+vector<size_t> Tracking::sortVectorGetIndexes(vector<double> vecA){
 
 	// initialize original index locations
-	std::vector<std::size_t> indexes(vecA.size());
+	vector<size_t> indexes(vecA.size());
 	std::iota(indexes.begin(), indexes.end(), 0);
 
 	// sort indexes based on comparing values in v
 	sort(indexes.begin(), indexes.end(),
-		[&vecA](std::size_t i1, std::size_t i2) {return vecA[i1] < vecA[i2]; });
+		[&vecA](size_t i1, size_t i2) {return vecA[i1] < vecA[i2]; });
 
 	return indexes;
 }

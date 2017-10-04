@@ -44,19 +44,21 @@ private:
 
 	int loadXMLConfiguration(string XMLFilePath);
 
-	int generateLanesMask();
+	int drawLanesMask();
 
 	IBGS *bgs;		//Bacground subtracion object
 	Datasets_Menu datasetsMenuObj;	//Datasets selection object
 	ForegroundPostProcessing fgroundPPObj; //Foreground post processing object
 	Tracking trackingObj; //Tracking object
 
-	vector<Lane> lanesConfig;		//Lanes configuration information
+	vector<Lane> lanesInfo;		//Lanes configuration information
 
+	Mat frameLanesConfig;//Lanes configuration drawn on the frame 
 	Mat oFrame;			//Original frame (higher resolution)
 	Mat frame;			//Processed frame (resized)
 	Mat fground;		//Foreground mask
 	Mat bgroundModel;	//Background model
+	Mat labeledRoisMask;//Labeled foreground ROIs
 
 	//Time vars
 	double t1, t2;	

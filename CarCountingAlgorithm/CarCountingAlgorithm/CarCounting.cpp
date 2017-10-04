@@ -13,6 +13,9 @@ CarCounting::CarCounting(){
 	datasetsMenuObj.Get_Frame(oFrame);
 	resize(oFrame, frame, cv::Size(480, 320));
 
+	//Draws lane information configuration on the frame
+	drawLanesMask();
+
 	//Initialize background subtraction  object	
 	bgs = new DPZivkovicAGMM;
 
@@ -20,7 +23,7 @@ CarCounting::CarCounting(){
 	fgroundPPObj = ForegroundPostProcessing(frame);
 
 	//Initialize tracking object
-	trackingObj = Tracking(lanesConfig);
+	trackingObj = Tracking(lanesInfo);
 }
 
 CarCounting::~CarCounting(){
@@ -35,9 +38,7 @@ int CarCounting::executeAlgorithm(){
 
 	//If frame is empty return -1
 	if (oFrame.empty())
-		return -1;
-
-	generateLanesMask();
+		return -1;	
 
 	//Perform background subtraction
 	t1 = (double)cvGetTickCount();
@@ -50,11 +51,12 @@ int CarCounting::executeAlgorithm(){
 	//Perform foreground postprocess
 	t1 = (double)cvGetTickCount();
 	fgroundPPObj.postProcessingMain(fground);
+	labeledRoisMask = fgroundPPObj.labeledRoisMask;
 	t2 = (double)cvGetTickCount();
 	printf("\nPostprocess time: %gms", (t2 - t1) / (cvGetTickFrequency()*1000.));
 
 	//Get objects from foreground regions
-	trackingObj.getCurrentFrameObjects(fgroundPPObj.nRois, fgroundPPObj.fMaskPost, fgroundPPObj.roisCountours, frame);
+	trackingObj.getCurrentFrameObjects(fgroundPPObj.nRois, labeledRoisMask, fgroundPPObj.roisCountours, frame);
 
 	//imshow("Frame", Fr);
 	//waitKey();
@@ -111,8 +113,14 @@ int CarCounting::loadXMLConfiguration(std::string XMLFilePath){
 		lane.id = atoi(pAttr->value());
 
 		//Get Direction
-		pAttr = lane_node->first_attribute("direction");
-		lane.direction = atoi(pAttr->value());
+		pAttr = lane_node->first_attribute("directionP1x");
+		lane.directionP1.x = atoi(pAttr->value());
+		pAttr = lane_node->first_attribute("directionP1y");
+		lane.directionP1.y = atoi(pAttr->value());
+		pAttr = lane_node->first_attribute("directionP2x");
+		lane.directionP2.x = atoi(pAttr->value());
+		pAttr = lane_node->first_attribute("directionP2y");
+		lane.directionP2.y = atoi(pAttr->value());
 
 		//Get polygon points
 		xml_node<> * polyPoint_node;
@@ -130,32 +138,44 @@ int CarCounting::loadXMLConfiguration(std::string XMLFilePath){
 		lane.polygonPoints = polyPoints;
 	}
 	//Store lanes
-	lanesConfig.push_back(lane);
-
-	
+	lanesInfo.push_back(lane);
 
 	return 0;
 }
 
-int CarCounting::generateLanesMask(){
+int CarCounting::drawLanesMask(){
 
-	Mat frameRois = oFrame.clone();
+	frameLanesConfig = oFrame.clone();
 	Mat frameCpy = oFrame.clone();
+	Mat laneMask = Mat::zeros(frame.size(), CV_8UC1);
 
-	for (size_t i = 0; i < lanesConfig.size(); i++){
+	for (size_t i = 0; i < lanesInfo.size(); i++){
 
-		vector<Point> tmp = lanesConfig[0].polygonPoints;
+		vector<Point> tmp = lanesInfo[i].polygonPoints;
 		const Point* elementPoints[1] = { &tmp[0] };
 		int numPoints[] = { tmp.size() };
-		cv::fillPoly(frameCpy, elementPoints, numPoints, 1, cv::Scalar(Color[i][0], Color[i][1], Color[i][2], 0.9), 8);
+
+		//Draw lane polygon 
+		cv::fillPoly(frameCpy, elementPoints, numPoints, 1, Scalar(Color[i][0], Color[i][1], Color[i][2]), 8);
+		cv::fillPoly(laneMask, elementPoints, numPoints, 1, Scalar(1), 8);
+		lanesInfo[i].mask = laneMask.clone();
+
+		//Draw lane direction as an arrow
+		cv::arrowedLine(frameLanesConfig, lanesInfo[i].directionP1, lanesInfo[i].directionP2,
+			Scalar(Color[i][0], Color[i][1], Color[i][2]), 3);
 	}
 
+	//Add lane polygon with transparency
 	double alpha = 0.3;
-	cv::addWeighted(frameCpy, alpha, frameRois, 1.0 - alpha, 0.0, frameRois);
+	cv::addWeighted(frameCpy, alpha, frameLanesConfig, 1.0 - alpha, 0.0, frameLanesConfig);
 
-	imshow("test", frameRois);
+	imshow("test", frameLanesConfig);
 	cv::waitKey();
 
 	return 0;
 }
+
+
+
+
 
