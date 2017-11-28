@@ -45,8 +45,8 @@ namespace bgslibrary
 			virtual ~IBGS() {}
 
 		protected:
-			bool firstTime = true;
-			bool showOutput = true;
+			bool firstTime;
+			bool showOutput;
 			cv::Mat img_background;
 			cv::Mat img_foreground;
 			std::string config_xml;
@@ -64,6 +64,8 @@ namespace bgslibrary
 				//img_outbg = cv::Mat::zeros(img_input.size(), img_input.type());
 				img_outfg = cv::Mat::zeros(img_input.size(), CV_8UC1);
 				img_outbg = cv::Mat::zeros(img_input.size(), CV_8UC3);
+				firstTime = true;
+				showOutput = true;
 			}
 
 		private:
