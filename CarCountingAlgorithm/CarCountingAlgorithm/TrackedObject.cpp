@@ -6,6 +6,7 @@ TrackedObject::TrackedObject(std::vector<cv::Point> roiContour, int roiId){
 
 	id = roiId;
 	color = cv::Scalar(Color[id][0], Color[id][1], Color[id][2]);
+	contour = roiContour;
 	getStatesFromContour(roiContour);
 }
 

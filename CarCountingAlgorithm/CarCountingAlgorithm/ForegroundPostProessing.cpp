@@ -19,7 +19,7 @@ ForegroundPostProcessing::ForegroundPostProcessing(const cv::Mat iniFrame){
 }
 
 void ForegroundPostProcessing::postProcessingMain(const cv::Mat &fMask){
-
+	
 	//Perform foreground mask closing
 	morphologyEx(fMask, fMask, 3, ForegroundPostProcessing::morphElement1);	
 
@@ -33,7 +33,6 @@ void ForegroundPostProcessing::postProcessingMain(const cv::Mat &fMask){
 	//Fill holes
 	fillHoles(fMask);
 	fMaskPost = fMask;
-	cv::imshow("fMask", fMask);
 
 	//Label isolated regions and store their contours
 	nRois = roiLabelling(fMask, labeledRoisMask);

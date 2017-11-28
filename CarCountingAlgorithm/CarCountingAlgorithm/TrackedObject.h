@@ -20,6 +20,7 @@ public:
 	int height;
 	int label;
 	cv::Scalar color;
+	std::vector<cv::Point> contour;
 
 private:
 
