@@ -4,6 +4,9 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <vector>
+#include "TrackedObject.h"
+#include "Definitions.h"
+#include <math.h>
 
 using cv::Mat;
 using cv::Point;
@@ -15,7 +18,9 @@ class FeatureExtractor{
 public:
 	FeatureExtractor();
 
-	void getShapeFeatures(vector<vector<Point>> roisContours, vector<vector<Point>> &keyShapePoints);
+	void getShapeFeatures(vector<TrackedObject> detectedObjects, vector<vector<Point>> &keyShapePoints);
 
+private:
+	void getAngleAndMagnitude(Point centroid, Point cPoint, float &angle, float &magnitude);
 };
 #endif FEATUREEXTRACTION_H;

@@ -8,5 +8,6 @@
 
 //-- Feature Extractor --
 #define SHAPE_ANGLE_STEP 15;
+#define SHAPE_ANGLE_THR 1;
 
 #endif;
