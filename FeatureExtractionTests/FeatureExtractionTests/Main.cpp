@@ -43,7 +43,7 @@ void main() {
 				findContours(imgAlpha, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 				drawContours(imgAlpha, contours, 0, Scalar(255,20,100), 2, 8, hierarchy, 0, Point());
 
-				fe.getShapeFeatures(contours[0], keyPoints);
+				fe.getShapeFeatures(contours[0], keyPoints, img);
 				fe.drawKeyPoints(img, keyPoints);
 
 				imshow("Im: " + imgName, img);

@@ -1,11 +1,13 @@
 #include "FeatureExtractor.h"
 
 FeatureExtractor::FeatureExtractor(){
-	angleStep = 15;
-	angleMinDifs = vector<float>(360 / angleStep, 999);
+	angleStep = 15;	
 }
 
-void FeatureExtractor::getShapeFeatures(vector<Point> objContour, vector<Point> &keyShapePoints) {
+void FeatureExtractor::getShapeFeatures(vector<Point> objContour, vector<Point> &keyPoints, Mat im) {
+
+	vector<float> angleMinDifs = vector<float>(360 / angleStep, 999);
+	vector<Point> keyShapePoints = vector<Point>(360 / angleStep, Point());
 
 	//Find centroid
 	int minX = 9999;
@@ -38,23 +40,30 @@ void FeatureExtractor::getShapeFeatures(vector<Point> objContour, vector<Point> 
 	float dx, dy;
 	float angleDif;
 	int nearestAngle;
-	bool angleFound = false;
+
 	for each(Point p in objContour) {
-		dx = centroid.x - p.x;
-		dy = centroid.y - p.y;
+		dx = p.x - centroid.x;
+		dy = (im.rows - p.y) - (im.rows - centroid.y);
 		angle = atan2(dy, dx) * 180 / PI;
+		angle = fmod(angle + 360 , 360);
 		magnitude = sqrt((dx * dx) + (dy * dy));
 		
 		angleDif = fmod(angle, angleStep);
-		nearestAngle
-		if ((angleDif < minAngleDif) && !angleFound) {
-			angleFound = true;
-			keyShapePoints.push_back(p);
-		}
-		else {
-			angleFound = false;
-		}
+		nearestAngle = (int)floor(angle / angleStep);
+
+		/*cout << "p:" << p << " a:" << angle << " ad:" << angleDif << " na:" << nearestAngle << endl;
+		circle(im, p, 2, Scalar(0, 20, 255), 2);
+		circle(im, centroid, 2, Scalar(255, 20, 0), 2);
+		imshow("test", im);
+		waitKey();*/
+
+		if (angleDif < angleMinDifs[nearestAngle]) {
+			keyShapePoints[nearestAngle] = p;
+			angleMinDifs[nearestAngle] = angleDif;
+		}		
 	}
+
+	keyPoints = keyShapePoints;
 }
 
 void FeatureExtractor::drawKeyPoints(Mat &img, const vector<Point> keyShapePoints) {

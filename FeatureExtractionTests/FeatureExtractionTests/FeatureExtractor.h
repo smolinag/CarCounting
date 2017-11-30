@@ -15,12 +15,11 @@ class FeatureExtractor {
 public:
 	FeatureExtractor();
 
-	void getShapeFeatures(vector<Point> objContour, vector<Point> &keyShapePoints);
+	void getShapeFeatures(vector<Point> objContour, vector<Point> &keyPoints, Mat Im);
 
 	void drawKeyPoints(Mat &img, const vector<Point> keyShapePoints);
 
 private:
-	float angleStep;
-	vector<float> angleMinDifs;
+	float angleStep;	
 };
 #endif;
