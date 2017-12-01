@@ -11,7 +11,7 @@ CarCounting::CarCounting(){
 
 	//Load initial frame	
 	datasetsMenuObj.Get_Frame(oFrame);
-	resize(oFrame, frame, cv::Size(480, 320));
+	resize(oFrame, frame, FRAME_RESIZE);
 
 	//Draws lane information configuration on the frame
 	drawLanesMask();
@@ -42,7 +42,7 @@ int CarCounting::executeAlgorithm(){
 
 	//Perform background subtraction
 	t1 = (double)cvGetTickCount();
-	resize(oFrame, frame, cv::Size(480, 320));
+	resize(oFrame, frame, FRAME_RESIZE);
 	bgs->process(frame, fground, bgroundModel);
 	t2 = (double)cvGetTickCount();
 	printf("\nBGS time: %gms", (t2 - t1) / (cvGetTickFrequency()*1000.));

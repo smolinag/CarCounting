@@ -4,10 +4,14 @@
 #include <opencv2/opencv.hpp>
 
 //-- Preprocessing --
-#define FRAME_RESIZE cv::Size(480,320);
+#define FRAME_RESIZE cv::Size(480,320)
+
+//-- Foreground Postprocessing -- 
+#define REL_MIN_REGION_AREA 0.001
+#define MORPH_ELEM_SIZE 5
 
 //-- Feature Extractor --
-#define SHAPE_ANGLE_STEP 15;
-#define SHAPE_ANGLE_THR 1;
+#define SHAPE_ANGLE_STEP 15
+#define PI 3.141592
 
 #endif;

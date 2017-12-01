@@ -5,6 +5,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/core/core.hpp>
 #include <vector>
+#include "Definitions.h"
 
 using cv::Mat;
 using cv::Point;
@@ -38,10 +39,7 @@ public:
 
 private:
 
-	int morphSize1;
-	int morphSize2;
-	Mat morphElement1;
-	Mat morphElement2;
+	Mat morphElement;
 	int minArea;
 	vector<vector<Point>> contours;
 	vector<cv::Vec4i> hierarchy;

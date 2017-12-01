@@ -4,10 +4,11 @@ FeatureExtractor::FeatureExtractor(){
 	angleStep = 15;	
 }
 
-void FeatureExtractor::getShapeFeatures(vector<Point> objContour, vector<Point> &keyPoints, Mat im) {
+void FeatureExtractor::getShapeFeatures(vector<Point> objContour, vector<float> &shapeFeatures, vector<Point> &keyPoints, Mat im) {
 
 	vector<float> angleMinDifs = vector<float>(360 / angleStep, 999);
-	vector<Point> keyShapePoints = vector<Point>(360 / angleStep, Point());
+	shapeFeatures = vector<float>(360 / angleStep);
+	keyPoints = vector<Point>(360 / angleStep, Point());
 
 	//Find centroid
 	int minX = 9999;
@@ -58,12 +59,11 @@ void FeatureExtractor::getShapeFeatures(vector<Point> objContour, vector<Point> 
 		waitKey();*/
 
 		if (angleDif < angleMinDifs[nearestAngle]) {
-			keyShapePoints[nearestAngle] = p;
+			shapeFeatures[nearestAngle] = magnitude;
+			keyPoints[nearestAngle] = p;
 			angleMinDifs[nearestAngle] = angleDif;
 		}		
 	}
-
-	keyPoints = keyShapePoints;
 }
 
 void FeatureExtractor::drawKeyPoints(Mat &img, const vector<Point> keyShapePoints) {

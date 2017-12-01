@@ -2,28 +2,33 @@
 
 FeatureExtractor::FeatureExtractor(){}
 
-void FeatureExtractor::getShapeFeatures(vector<TrackedObject> detectedObjects, vector<vector<Point>> &keyShapePoints){
+void FeatureExtractor::getShapeFeatures(vector<TrackedObject> &detectedObjects){
 
-	float angle, magnitude;
-	float angleStep = SHAPE_ANGLE_STEP;
-	float angleThr = SHAPE_ANGLE_THR;
+	vector<float> angleMinDifs = vector<float>(360 / SHAPE_ANGLE_STEP, 999);
+	float angle, magnitude;	
+	float angleDif, nearestAngle;
 
-	for each  (TrackedObject object in detectedObjects){
+	for each  (TrackedObject &object in detectedObjects){
+		object.keyShapeFeatures = vector<float>(360 / SHAPE_ANGLE_STEP);
 		for each (Point cPoint in object.contour){
-			getAngleAndMagnitude(object.centroid, cPoint, angle, magnitude);
+			getAngleAndMagnitude(object, cPoint, angle, magnitude);
 
-			if (fmod(angle, angleStep) < angleThr){
+			angleDif = fmod(angle, SHAPE_ANGLE_STEP);
+			nearestAngle = (int)floor(angle / SHAPE_ANGLE_STEP);
 
+			if (angleDif < angleMinDifs[nearestAngle]) {
+				object.keyShapeFeatures[nearestAngle] = magnitude;
+				angleMinDifs[nearestAngle] = angleDif;
 			}
 		}
 	}
 }
 
-void FeatureExtractor::getAngleAndMagnitude(Point centroid, Point cPoint, float &angle, float &magnitude){
+void FeatureExtractor::getAngleAndMagnitude(TrackedObject detectedObject, Point cPoint, float &angle, float &magnitude){
 
-	float dx = centroid.x - cPoint.x;
-	float dy = centroid.y - cPoint.y;
-	angle = atan2(dy, dx);
+	float dx = cPoint.x - detectedObject.centroid.x;
+	float dy = (detectedObject.height - cPoint.y) - (detectedObject.height - detectedObject.centroid.y);
+	angle = atan2(dy, dx) * 180 / PI;
+	angle = fmod(angle + 360, 360);
 	magnitude = sqrt((dx * dx) + (dy * dy));
-
 }

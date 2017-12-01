@@ -10,18 +10,14 @@ ForegroundPostProcessing::ForegroundPostProcessing(const cv::Mat iniFrame){
 	//Initialize variables
 	int frameHeight = iniFrame.rows;
 	int frameWidth = iniFrame.cols;
-	float pminArea = 0.001;
-	minArea = int(pminArea*float(frameHeight*frameWidth));  //Minimum area to consider a region
-	morphSize1 = 5;
-	morphElement1 = cv::getStructuringElement(2, cv::Size(2 * morphSize1 + 1, 2 * morphSize1 + 1), cv::Point(morphSize1, morphSize1));
-	morphSize2 = 5;
-	morphElement1 = cv::getStructuringElement(2, cv::Size(2 * morphSize2 + 1, 2 * morphSize2 + 1), cv::Point(morphSize2, morphSize2));
+	minArea = int(REL_MIN_REGION_AREA*float(frameHeight*frameWidth));  //Minimum area to consider a region
+	morphElement = cv::getStructuringElement(2, cv::Size(2 * MORPH_ELEM_SIZE + 1, 2 * MORPH_ELEM_SIZE + 1), cv::Point(MORPH_ELEM_SIZE, MORPH_ELEM_SIZE));
 }
 
 void ForegroundPostProcessing::postProcessingMain(const cv::Mat &fMask){
 	
 	//Perform foreground mask closing
-	morphologyEx(fMask, fMask, 3, ForegroundPostProcessing::morphElement1);	
+	morphologyEx(fMask, fMask, 3, ForegroundPostProcessing::morphElement);	
 
 	//Delete small regions
 	deleteSmallRegions(fMask);

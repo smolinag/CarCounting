@@ -21,6 +21,7 @@ public:
 	int label;
 	cv::Scalar color;
 	std::vector<cv::Point> contour;
+	std::vector<float> keyShapeFeatures;
 
 private:
 

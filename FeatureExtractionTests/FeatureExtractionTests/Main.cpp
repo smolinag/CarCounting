@@ -13,7 +13,7 @@ void main() {
 
 	struct dirent *ent;		//Structure to read directories	
 	DIR *dir;				//Directory variable
-	string main_path_str = "C://Users//jaime.echeverry//Documents//Tests//CarDetection//SideViews//Cars";
+	string main_path_str = "C://Users//jaime.echeverry//Documents//Tests//CarDetection//SideViews//Motos";
 	char main_path_ch[250];
 	Mat img;
 	string imgName;
@@ -22,6 +22,7 @@ void main() {
 	vector<vector<Point>> contours;
 	vector<cv::Vec4i> hierarchy;
 	vector<Point> keyPoints;
+	vector<float> shapeFeatures;
 	ForegroundPostProcessing fpp;
 	FeatureExtractor fe;
 
@@ -43,7 +44,7 @@ void main() {
 				findContours(imgAlpha, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 				drawContours(imgAlpha, contours, 0, Scalar(255,20,100), 2, 8, hierarchy, 0, Point());
 
-				fe.getShapeFeatures(contours[0], keyPoints, img);
+				fe.getShapeFeatures(contours[0], shapeFeatures, keyPoints, img);
 				fe.drawKeyPoints(img, keyPoints);
 
 				imshow("Im: " + imgName, img);

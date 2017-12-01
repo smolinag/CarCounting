@@ -15,7 +15,7 @@ class FeatureExtractor {
 public:
 	FeatureExtractor();
 
-	void getShapeFeatures(vector<Point> objContour, vector<Point> &keyPoints, Mat Im);
+	void getShapeFeatures(vector<Point> objContour, vector<float> &shapeFeatures, vector<Point> &keyPoints, Mat im);
 
 	void drawKeyPoints(Mat &img, const vector<Point> keyShapePoints);
 

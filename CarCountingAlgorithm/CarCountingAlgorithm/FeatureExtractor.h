@@ -18,9 +18,9 @@ class FeatureExtractor{
 public:
 	FeatureExtractor();
 
-	void getShapeFeatures(vector<TrackedObject> detectedObjects, vector<vector<Point>> &keyShapePoints);
+	void getShapeFeatures(vector<TrackedObject> &detectedObjects);
 
 private:
-	void getAngleAndMagnitude(Point centroid, Point cPoint, float &angle, float &magnitude);
+	void getAngleAndMagnitude(TrackedObject detectedObject, Point cPoint, float &angle, float &magnitude);
 };
 #endif FEATUREEXTRACTION_H;

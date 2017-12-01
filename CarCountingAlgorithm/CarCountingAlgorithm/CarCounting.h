@@ -15,6 +15,7 @@
 #include "ForegroundPostProcessing.h"
 #include "Tracking.h"
 #include "CarCounting.h"
+#include "Definitions.h"
 
 using namespace rapidxml;
 using cv::Point;
