@@ -43,6 +43,5 @@ private:
 	int minArea;
 	vector<vector<Point>> contours;
 	vector<cv::Vec4i> hierarchy;
-	Point pt;
 };
 #endif
