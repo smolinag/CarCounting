@@ -156,13 +156,13 @@ int CarCounting::drawLanesMask(){
 		int numPoints[] = { tmp.size() };
 
 		//Draw lane polygon 
-		cv::fillPoly(frameCpy, elementPoints, numPoints, 1, Scalar(Color[i][0], Color[i][1], Color[i][2]), 8);
+		cv::fillPoly(frameCpy, elementPoints, numPoints, 1, Scalar(ColorLib[i][0], ColorLib[i][1], ColorLib[i][2]), 8);
 		cv::fillPoly(laneMask, elementPoints, numPoints, 1, Scalar(1), 8);
 		lanesInfo[i].mask = laneMask.clone();
 
 		//Draw lane direction as an arrow
 		cv::arrowedLine(frameLanesConfig, lanesInfo[i].directionP1, lanesInfo[i].directionP2,
-			Scalar(Color[i][0], Color[i][1], Color[i][2]), 3);
+			Scalar(ColorLib[i][0], ColorLib[i][1], ColorLib[i][2]), 3);
 	}
 
 	//Add lane polygon with transparency

@@ -29,15 +29,19 @@ class Tracking{
 public:
 	Tracking();
 
-	Tracking(vector<Lane> lanesConfigInfo);
+	Tracking(vector<Lane> lanesConfigInfo);	
 
-	void getCurrentFrameObjects(int numRois, Mat fRois, vector<vector<Point>> roisContours, Mat frame);
+	void trackingProcess(int numRois, Mat fRois, vector<vector<Point>> roisContours, Mat frame);
 
 	vector<TrackedObject> trackedObjects;
 
 private:
 
+	void getCurrentFrameObjects(int numRois, Mat fRois, vector<vector<Point>> roisContours, Mat frame);
+
 	bool checkRoiInsideLane(TrackedObject tObj, size_t roiIdx);
+
+	bool checkRoiIsVehicle(TrackedObject tObj);
 
 	void getNearestRois();
 

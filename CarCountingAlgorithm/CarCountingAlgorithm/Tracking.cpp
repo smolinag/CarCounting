@@ -10,6 +10,10 @@ Tracking::Tracking(vector<Lane> lanesConfigInfo){
 	trckingId = 0;
 }
 
+void Tracking::trackingProcess(int numRois, Mat fRois, vector<vector<Point>> roisContours, Mat currFrame) {
+
+}
+
 void Tracking::getCurrentFrameObjects(int numRois, Mat fRois, vector<vector<Point>> roisContours, Mat currFrame){
 
 	frame = currFrame;
