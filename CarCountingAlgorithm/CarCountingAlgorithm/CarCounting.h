@@ -9,11 +9,13 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/core/core.hpp>
-#include "ColorLibrary.h"
-#include "Datasets_Menu.h"
+
+#include "DatasetsSelector.h"
 #include "package_bgs\DPZivkovicAGMM.h"
-#include "ForegroundPostProcessing.h"
-#include "Tracking.h"
+#include "ForegroundPostprocessor.h"
+#include "FeatureExtractor.h"
+#include "ObjectClassifier.h"
+#include "ObjectTracker.h"
 #include "CarCounting.h"
 #include "Definitions.h"
 
@@ -47,10 +49,12 @@ private:
 
 	int drawLanesMask();
 
-	IBGS *bgs;		//Bacground subtracion object
-	Datasets_Menu datasetsMenuObj;	//Datasets selection object
-	ForegroundPostProcessing fgroundPPObj; //Foreground post processing object
-	Tracking trackingObj; //Tracking object
+	IBGS *bgs;		
+	DatasetsSelector datasetsSelector;
+	ForegroundPostprocessor foregroundPostprocessor;
+	FeatureExtractor featureExtractor;
+	ObjectClassifier objectClassifier;	
+	ObjectTracker objectTracker; 
 
 	vector<Lane> lanesInfo;		//Lanes configuration information
 

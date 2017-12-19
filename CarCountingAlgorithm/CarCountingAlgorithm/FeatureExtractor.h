@@ -4,7 +4,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <vector>
-#include "TrackedObject.h"
+#include "ForegroundObject.h"
 #include "Definitions.h"
 #include <math.h>
 
@@ -18,9 +18,9 @@ class FeatureExtractor{
 public:
 	FeatureExtractor();
 
-	void getShapeFeatures(vector<TrackedObject> &detectedObjects);
+	void getShapeFeatures(ForegroundObject &detectedObject);
 
 private:
-	void getAngleAndMagnitude(TrackedObject detectedObject, Point cPoint, float &angle, float &magnitude);
+	void getAngleAndMagnitude(ForegroundObject detectedObject, Point cPoint, float &angle, float &magnitude);
 };
 #endif FEATUREEXTRACTION_H;

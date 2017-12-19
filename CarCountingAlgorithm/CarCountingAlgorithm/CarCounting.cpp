@@ -5,12 +5,12 @@ CarCounting::CarCounting(){
 	//Load XML Configuration
 	loadXMLConfiguration("./config/HomeCam5.xml");
 
-	//Initialize datast object and select record source
-	datasetsMenuObj = Datasets_Menu();
-	datasetsMenuObj.Select_Dataset();
+	//Initialize dataset selector and select record source
+	datasetsSelector = DatasetsSelector();
+	datasetsSelector.Select_Dataset();
 
 	//Load initial frame	
-	datasetsMenuObj.Get_Frame(oFrame);
+	datasetsSelector.Get_Frame(oFrame);
 	resize(oFrame, frame, FRAME_RESIZE);
 
 	//Draws lane information configuration on the frame
@@ -19,11 +19,17 @@ CarCounting::CarCounting(){
 	//Initialize background subtraction  object	
 	bgs = new DPZivkovicAGMM;
 
-	//Initialize foreground Postprocessing object
-	fgroundPPObj = ForegroundPostProcessing(frame);
+	//Initialize foreground postprocessor
+	foregroundPostprocessor = ForegroundPostprocessor(frame);
 
-	//Initialize tracking object
-	trackingObj = Tracking(lanesInfo);
+	//Initialize feature extractor
+	featureExtractor = FeatureExtractor();
+
+	//Initialize object classifier
+	objectClassifier = ObjectClassifier();
+
+	//Initialize object tracker
+	objectTracker = ObjectTracker(lanesInfo, featureExtractor, objectClassifier);
 }
 
 CarCounting::~CarCounting(){
@@ -34,7 +40,7 @@ CarCounting::~CarCounting(){
 int CarCounting::executeAlgorithm(){
 
 	//Get new frame
-	datasetsMenuObj.Get_Frame(oFrame);
+	datasetsSelector.Get_Frame(oFrame);
 
 	//If frame is empty return -1
 	if (oFrame.empty())
@@ -50,13 +56,13 @@ int CarCounting::executeAlgorithm(){
 
 	//Perform foreground postprocess
 	t1 = (double)cvGetTickCount();
-	fgroundPPObj.postProcessingMain(fground);
-	labeledRoisMask = fgroundPPObj.labeledRoisMask;
+	foregroundPostprocessor.postProcessingMain(fground);
+	labeledRoisMask = foregroundPostprocessor.labeledRoisMask;
 	t2 = (double)cvGetTickCount();
 	printf("\nPostprocess time: %gms", (t2 - t1) / (cvGetTickFrequency()*1000.));
 
 	//Get objects from foreground regions
-	trackingObj.getCurrentFrameObjects(fgroundPPObj.nRois, labeledRoisMask, fgroundPPObj.roisCountours, frame);
+	objectTracker.trackingProcess(labeledRoisMask, foregroundPostprocessor.roisCountours, frame);
 
 	//imshow("Frame", Fr);
 	//waitKey();

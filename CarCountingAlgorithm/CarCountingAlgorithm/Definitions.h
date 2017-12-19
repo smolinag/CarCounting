@@ -19,4 +19,7 @@ const static uchar ColorLib[20][3] = { { 200, 0, 0 },{ 0, 0, 200 },{ 0, 200, 0 }
 #define SHAPE_ANGLE_STEP 15
 #define PI 3.141592
 
+//-- Object Classifier --
+#define CONFIDENCE_THR 0.8
+
 #endif;

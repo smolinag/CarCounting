@@ -1,10 +1,10 @@
-#include "ForegroundPostProcessing.h"
+#include "ForegroundPostprocessor.h"
 
-ForegroundPostProcessing::ForegroundPostProcessing(){
+ForegroundPostprocessor::ForegroundPostprocessor(){
 
 }
 
-ForegroundPostProcessing::ForegroundPostProcessing(const cv::Mat iniFrame){
+ForegroundPostprocessor::ForegroundPostprocessor(const cv::Mat iniFrame){
 
 	//Initialize variables
 	int frameHeight = iniFrame.rows;
@@ -13,10 +13,10 @@ ForegroundPostProcessing::ForegroundPostProcessing(const cv::Mat iniFrame){
 	morphElement = cv::getStructuringElement(2, cv::Size(2 * MORPH_ELEM_SIZE + 1, 2 * MORPH_ELEM_SIZE + 1), cv::Point(MORPH_ELEM_SIZE, MORPH_ELEM_SIZE));
 }
 
-void ForegroundPostProcessing::postProcessingMain(const cv::Mat &fMask){
+void ForegroundPostprocessor::postProcessingMain(const cv::Mat &fMask){
 	
 	//Perform foreground mask closing
-	morphologyEx(fMask, fMask, 3, ForegroundPostProcessing::morphElement);	
+	morphologyEx(fMask, fMask, 3, ForegroundPostprocessor::morphElement);	
 
 	//Delete small regions
 	deleteSmallRegions(fMask);
@@ -37,7 +37,7 @@ void ForegroundPostProcessing::postProcessingMain(const cv::Mat &fMask){
 }
 
 //Deletes regions smaller than a percentage of the frame size according to the size of their countours
-void ForegroundPostProcessing::deleteSmallRegions(const cv::Mat &fMask){
+void ForegroundPostprocessor::deleteSmallRegions(const cv::Mat &fMask){
 
 	//Find initial countours
 	cv::Mat A = fMask.clone();
@@ -58,7 +58,7 @@ void ForegroundPostProcessing::deleteSmallRegions(const cv::Mat &fMask){
 }
 
 //Fills the holes inside foreground regions
-void ForegroundPostProcessing::fillHoles(const cv::Mat &fMask){
+void ForegroundPostprocessor::fillHoles(const cv::Mat &fMask){
 	cv::Point pt;
 
 	//Loop through countours finding inner contours to fill them
@@ -75,7 +75,7 @@ void ForegroundPostProcessing::fillHoles(const cv::Mat &fMask){
 
 //Given a foregrounf image (binary), labels each isolated region. 
 //It also stores the coordinates of their countours
-int ForegroundPostProcessing::roiLabelling(cv::Mat fMask, cv::Mat &roiLabelMask){
+int ForegroundPostprocessor::roiLabelling(cv::Mat fMask, cv::Mat &roiLabelMask){
 	
 	roiLabelMask = fMask.clone();
 	int Nroi = 0;
@@ -99,7 +99,7 @@ int ForegroundPostProcessing::roiLabelling(cv::Mat fMask, cv::Mat &roiLabelMask)
 }
 
 //Given a Mat with labeled regions from 1 to N, assigns a different color to each of them and plots it
-void ForegroundPostProcessing::imagesc(cv::Mat src, int siz, char* Plotname){
+void ForegroundPostprocessor::imagesc(cv::Mat src, int siz, char* Plotname){
 	
 	//Color Directory
 	cv::Mat output(src.rows, src.cols, CV_8UC3, CV_RGB(0, 0, 0));
